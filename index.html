@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mass Website Response Checker Pro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #1e293b;
+            border-radius: 16px;
+            padding: 25px 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .subtitle {
+            color: #94a3b8;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        .top-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            align-items: center;
+            background: #0f172a;
+            padding: 12px 18px;
+            border-radius: 12px;
+        }
+        .thread-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #1e293b;
+            padding: 4px 15px 4px 18px;
+            border-radius: 30px;
+            border: 1px solid #334155;
+        }
+        .thread-control label {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+        .thread-control input {
+            width: 65px;
+            background: #0f172a;
+            border: 1px solid #475569;
+            border-radius: 8px;
+            color: #e2e8f0;
+            padding: 5px 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+        }
+        .thread-control input:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        .btn {
+            padding: 7px 18px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: scale(1.02);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-success {
+            background: #22c55e;
+            color: #0f172a;
+        }
+        .btn-success:hover {
+            background: #16a34a;
+            transform: scale(1.02);
+        }
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: scale(1.02);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #475569;
+            color: #e2e8f0;
+        }
+        .btn-outline:hover {
+            background: #334155;
+        }
+        .btn-warning {
+            background: #f59e0b;
+            color: #0f172a;
+        }
+        .btn-warning:hover {
+            background: #d97706;
+            transform: scale(1.02);
+        }
+        .btn-purple {
+            background: #8b5cf6;
+            color: white;
+        }
+        .btn-purple:hover {
+            background: #7c3aed;
+            transform: scale(1.02);
+        }
+        .btn-copy {
+            background: #0ea5e9;
+            color: white;
+            padding: 3px 10px;
+            font-size: 0.7rem;
+            border-radius: 15px;
+        }
+        .btn-copy:hover {
+            background: #0284c7;
+            transform: scale(1.05);
+        }
+        .btn-copy.copy-success {
+            background: #22c55e;
+        }
+        .preset-sites {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+            padding: 10px 14px;
+            background: #0f172a;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+        .preset-sites .tag {
+            background: #1e293b;
+            padding: 4px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            color: #94a3b8;
+            border: 1px solid #334155;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .preset-sites .tag:hover {
+            background: #334155;
+            color: #e2e8f0;
+            border-color: #60a5fa;
+        }
+        .preset-sites .tag.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+        textarea {
+            width: 100%;
+            height: 100px;
+            background: #0f172a;
+            border: 2px solid #334155;
+            border-radius: 12px;
+            color: #e2e8f0;
+            padding: 12px 16px;
+            font-size: 0.85rem;
+            font-family: 'Consolas', monospace;
+            resize: vertical;
+            transition: border-color 0.2s;
+            margin-bottom: 12px;
+        }
+        textarea:focus {
+            outline: none;
+            border-color: #60a5fa;
+        }
+        .stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 25px;
+            background: #0f172a;
+            padding: 10px 18px;
+            border-radius: 12px;
+            margin-bottom: 14px;
+            align-items: center;
+        }
+        .stats .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.85rem;
+        }
+        .stats .stat-item .label {
+            color: #94a3b8;
+        }
+        .stats .stat-item .value {
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .stats .stat-item .value.up { color: #22c55e; }
+        .stats .stat-item .value.down { color: #ef4444; }
+        .stats .stat-item .value.timeout { color: #f59e0b; }
+        .stats .stat-item .value.error { color: #6b7280; }
+        .stats .copy-actions {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: #1e293b;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .progress-bar.active {
+            display: block;
+        }
+        .progress-bar .fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3b82f6, #a78bfa);
+            transition: width 0.3s;
+            width: 0%;
+        }
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        th {
+            background: #0f172a;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #94a3b8;
+            border-bottom: 2px solid #334155;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: #0f172a;
+        }
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #1e293b;
+            vertical-align: middle;
+        }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: #1e293b; }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 2px 10px 2px 6px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+        .status-badge .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-badge.up { background: #22c55e20; color: #22c55e; }
+        .status-badge.up .dot { background: #22c55e; }
+        .status-badge.down { background: #ef444420; color: #ef4444; }
+        .status-badge.down .dot { background: #ef4444; }
+        .status-badge.timeout { background: #f59e0b20; color: #f59e0b; }
+        .status-badge.timeout .dot { background: #f59e0b; }
+        .status-badge.error { background: #6b728020; color: #6b7280; }
+        .status-badge.error .dot { background: #6b7280; }
+        .status-badge.waiting { background: #47556920; color: #94a3b8; }
+        .status-badge.waiting .dot { background: #94a3b8; }
+        .url-cell {
+            word-break: break-all;
+            font-family: 'Consolas', monospace;
+            font-size: 0.78rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .url-cell .url-text {
+            flex: 1;
+        }
+        .time-cell {
+            font-family: monospace;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 10px; }
+        .footer {
+            margin-top: 14px;
+            text-align: center;
+            font-size: 0.7rem;
+            color: #475569;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        .toast.success { border-left: 4px solid #22c55e; }
+        .toast.error { border-left: 4px solid #ef4444; }
+        .toast.info { border-left: 4px solid #3b82f6; }
+        @media (max-width: 768px) {
+            .container { padding: 15px; }
+            h1 { font-size: 1.3rem; }
+            .top-bar { flex-direction: column; align-items: stretch; }
+            .thread-control { justify-content: center; }
+            .stats { flex-wrap: wrap; justify-content: center; }
+            .stats .copy-actions { margin-left: 0; width: 100%; justify-content: center; }
+            .preset-sites { justify-content: center; }
+            .btn { font-size: 0.75rem; padding: 6px 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>⚡ Response Checker Pro</h1>
+    <p class="subtitle">Mass parallel check · custom thread · copy hasil hidup</p>
+
+    <!-- Preset Sites -->
+    <div class="preset-sites" id="presetSites">
+        <span class="tag active" data-preset="default">🌍 Default</span>
+        <span class="tag" data-preset="indonesia">🇮🇩 Indonesia</span>
+        <span class="tag" data-preset="global">🌐 Global</span>
+        <span class="tag" data-preset="social">📱 Social</span>
+        <span class="tag" data-preset="api">🔌 API</span>
+        <span class="tag" data-preset="custom">✏️ Custom</span>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div class="thread-control">
+            <label>🧵 Thread:</label>
+            <input type="number" id="threadCount" value="10" min="1" max="50">
+        </div>
+        <button class="btn btn-primary" id="checkBtn">▶️ Cek Semua</button>
+        <button class="btn btn-success" id="stopBtn" disabled>⏹ Stop</button>
+        <button class="btn btn-warning" id="refreshBtn">🔄 Refresh</button>
+        <button class="btn btn-outline" id="exportBtn">📥 Export</button>
+        <button class="btn btn-danger" id="clearBtn">🗑 Clear</button>
+    </div>
+
+    <!-- Textarea -->
+    <textarea id="urlInput" placeholder="Masukkan daftar URL/domain, satu per baris..."></textarea>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div class="stat-item">📊 Total: <span class="value" id="totalCount">0</span></div>
+        <div class="stat-item">✅ <span class="value up" id="upCount">0</span></div>
+        <div class="stat-item">❌ <span class="value down" id="downCount">0</span></div>
+        <div class="stat-item">⏱ <span class="value timeout" id="timeoutCount">0</span></div>
+        <div class="stat-item">⚠️ <span class="value error" id="errorCount">0</span></div>
+        <div class="stat-item" style="margin-left:auto;">⏳ <span id="progressText">0%</span></div>
+        <div class="copy-actions">
+            <button class="btn btn-purple" id="copyAllUpBtn" style="font-size:0.75rem;padding:4px 14px;">
+                📋 Copy All UP
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-bar" id="progressBar">
+        <div class="fill" id="progressFill"></div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-wrap">
+        <table>
+            <thead>
+                <tr>
+                    <th style="width:35px;">#</th>
+                    <th>URL / Domain</th>
+                    <th style="width:130px;">Status</th>
+                    <th style="width:80px;">Waktu</th>
+                    <th style="width:70px;">Copy</th>
+                </tr>
+            </thead>
+            <tbody id="resultBody">
+                <tr><td colspan="5" class="empty-state">
+                    <div class="icon">🚀</div>
+                    <div>Masukkan daftar URL dan klik "Cek Semua"</div>
+                    <p style="font-size:0.8rem;margin-top:5px;">Gunakan preset di atas untuk memulai cepat</p>
+                </td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="footer">Menggunakan fetch + AbortController · parallel dengan thread control · copy hasil UP</div>
+</div>
+
+<!-- Toast Notification -->
+<div class="toast" id="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMessage">Copied!</span>
+</div>
+
+<script>
+    (function() {
+        // DOM refs
+        const urlInput = document.getElementById('urlInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyAllUpBtn = document.getElementById('copyAllUpBtn');
+        const resultBody = document.getElementById('resultBody');
+        const threadInput = document.getElementById('threadCount');
+        const progressFill = document.getElementById('progressFill');
+        const progressBar = document.getElementById('progressBar');
+        const progressText = document.getElementById('progressText');
+
+        const totalCount = document.getElementById('totalCount');
+        const upCount = document.getElementById('upCount');
+        const downCount = document.getElementById('downCount');
+        const timeoutCount = document.getElementById('timeoutCount');
+        const errorCount = document.getElementById('errorCount');
+
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = document.getElementById('toastIcon');
+
+        // State
+        let results = [];
+        let isRunning = false;
+        let stopRequested = false;
+        let activeControllers = [];
+        let toastTimeout = null;
+
+        // Preset data
+        const presets = {
+            default: [
+                'google.com', 'youtube.com', 'github.com', 'facebook.com',
+                'twitter.com', 'instagram.com', 'wikipedia.org', 'reddit.com',
+                'amazon.com', 'netflix.com'
+            ],
+            indonesia: [
+                'google.co.id', 'youtube.com', 'tokopedia.com', 'shopee.co.id',
+                'bukalapak.com', 'blibli.com', 'detik.com', 'kompas.com',
+                'liputan6.com', 'cnnindonesia.com', 'gojek.com', 'traveloka.com'
+            ],
+            global: [
+                'google.com', 'youtube.com', 'facebook.com', 'twitter.com',
+                'instagram.com', 'wikipedia.org', 'reddit.com', 'amazon.com',
+                'netflix.com', 'spotify.com', 'apple.com', 'microsoft.com'
+            ],
+            social: [
+                'facebook.com', 'twitter.com', 'instagram.com', 'linkedin.com',
+                'tiktok.com', 'snapchat.com', 'pinterest.com', 'reddit.com',
+                'tumblr.com', 'whatsapp.com', 'telegram.org', 'discord.com'
+            ],
+            api: [
+                'api.github.com', 'api.twitter.com', 'api.facebook.com',
+                'api.spotify.com', 'api.slack.com', 'api.stripe.com',
+                'api.paypal.com', 'api.shopify.com', 'api.dropbox.com',
+                'api.salesforce.com'
+            ],
+            custom: [
+                'example.com', 'test.com', 'localhost', '192.168.1.1'
+            ]
+        };
+
+        // --- Toast ---
+        function showToast(message, type = 'success') {
+            const icons = {
+                success: '✅',
+                error: '❌',
+                info: 'ℹ️'
+            };
+            toastIcon.textContent = icons[type] || '✅';
+            toastMessage.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2500);
+        }
+
+        // --- Copy function ---
+        function copyToClipboard(text, successMsg = 'Copied!') {
+            if (!text) {
+                showToast('Tidak ada data untuk disalin', 'error');
+                return;
+            }
+            
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showToast(successMsg, 'success');
+                }).catch(() => {
+                    // Fallback
+                    fallbackCopy(text, successMsg);
+                });
+            } else {
+                fallbackCopy(text, successMsg);
+            }
+        }
+
+        function fallbackCopy(text, successMsg) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast(successMsg, 'success');
+            } catch (err) {
+                showToast('Gagal menyalin', 'error');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // --- Copy All UP ---
+        copyAllUpBtn.addEventListener('click', function() {
+            const upUrls = results
+                .filter(r => r.status === 'UP')
+                .map(r => r.url);
+            
+            if (upUrls.length === 0) {
+                showToast('Tidak ada website yang UP', 'error');
+                return;
+            }
+            
+            const text = upUrls.join('\n');
+            copyToClipboard(text, `✅ ${upUrls.length} URL UP disalin!`);
+        });
+
+        // --- Copy single URL ---
+        function copySingleUrl(url, status) {
+            if (status === 'UP') {
+                copyToClipboard(url, `✅ ${url} disalin!`);
+            } else {
+                showToast(`⚠️ ${url} tidak UP (${status})`, 'error');
+            }
+        }
+
+        // --- Helpers ---
+        function getUrlsFromInput() {
+            return urlInput.value.split('\n')
+                .map(line => line.trim())
+                .filter(line => line.length > 0);
+        }
+
+        function setUrls(urls) {
+            urlInput.value = urls.join('\n');
+        }
+
+        function updateStats() {
+            const total = results.length;
+            const up = results.filter(r => r.status === 'UP').length;
+            const down = results.filter(r => r.status === 'DOWN').length;
+            const timeout = results.filter(r => r.status === 'TIMEOUT').length;
+            const error = results.filter(r => r.status === 'ERROR').length;
+            totalCount.textContent = total;
+            upCount.textContent = up;
+            downCount.textContent = down;
+            timeoutCount.textContent = timeout;
+            errorCount.textContent = error;
+        }
+
+        function renderTable() {
+            if (results.length === 0) {
+                resultBody.innerHTML = `<tr><td colspan="5" class="empty-state">
+                    <div class="icon">🚀</div>
+                    <div>Belum ada hasil</div>
+                    <p style="font-size:0.8rem;margin-top:5px;">Klik "Cek Semua" untuk mulai</p>
+                </td></tr>`;
+                updateStats();
+                return;
+            }
+
+            let html = '';
+            results.forEach((item, idx) => {
+                const statusClass = item.status.toLowerCase();
+                const timeDisplay = item.time !== undefined && item.time !== null ? `${item.time}ms` : '—';
+                const isUp = item.status === 'UP';
+                
+                html += `<tr>
+                    <td>${idx+1}</td>
+                    <td>
+                        <div class="url-cell">
+                            <span class="url-text">${escapeHtml(item.url)}</span>
+                        </div>
+                    </td>
+                    <td><span class="status-badge ${statusClass}"><span class="dot"></span>${item.status}</span></td>
+                    <td class="time-cell">${timeDisplay}</td>
+                    <td>
+                        <button class="btn btn-copy copy-btn" data-url="${escapeHtml(item.url)}" data-status="${item.status}" ${isUp ? '' : 'style="opacity:0.5;"'}>
+                            📋 Copy
+                        </button>
+                    </td>
+                </tr>`;
+            });
+            resultBody.innerHTML = html;
+            updateStats();
+
+            // Attach copy events to individual copy buttons
+            document.querySelectorAll('.copy-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    const status = this.dataset.status;
+                    copySingleUrl(url, status);
+                });
+            });
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // --- Core check ---
+        async function checkUrl(url, index, total) {
+            let target = url.trim();
+            let protocol = 'https://';
+            if (!/^https?:\/\//i.test(target)) {
+                target = 'https://' + target;
+            }
+
+            const startTime = performance.now();
+            const TIMEOUT = 10000;
+            const controller = new AbortController();
+            activeControllers.push(controller);
+
+            try {
+                const timeoutId = setTimeout(() => controller.abort(), TIMEOUT);
+
+                const response = await fetch(target, {
+                    method: 'HEAD',
+                    signal: controller.signal,
+                    mode: 'no-cors',
+                    cache: 'no-store',
+                    redirect: 'follow'
+                });
+
+                clearTimeout(timeoutId);
+                const elapsed = Math.round(performance.now() - startTime);
+
+                let statusText = 'UP';
+                if (response.type === 'opaque' || response.status === 0 || response.ok) {
+                    statusText = 'UP';
+                } else {
+                    statusText = response.status >= 200 && response.status < 400 ? 'UP' : 'DOWN';
+                }
+
+                updateProgress(index + 1, total);
+                return { url, status: statusText, time: elapsed };
+
+            } catch (err) {
+                const elapsed = Math.round(performance.now() - startTime);
+                let statusText = 'ERROR';
+                if (err.name === 'AbortError') {
+                    statusText = 'TIMEOUT';
+                } else if (err.message && err.message.includes('Failed to fetch')) {
+                    statusText = 'DOWN';
+                } else {
+                    statusText = 'ERROR';
+                }
+
+                updateProgress(index + 1, total);
+                return { url, status: statusText, time: elapsed };
+
+            } finally {
+                const idx = activeControllers.indexOf(controller);
+                if (idx > -1) activeControllers.splice(idx, 1);
+            }
+        }
+
+        // --- Mass check ---
+        async function massCheck(urls) {
+            if (!urls || urls.length === 0) {
+                showToast('Masukkan minimal 1 URL/domain', 'error');
+                return;
+            }
+
+            if (isRunning) {
+                if (!confirm('Pengecekan sedang berjalan. Hentikan dan mulai ulang?')) return;
+                stopRequested = true;
+                await new Promise(resolve => setTimeout(resolve, 500));
+                stopRequested = false;
+            }
+
+            results = [];
+            activeControllers = [];
+            isRunning = true;
+            stopRequested = false;
+            checkBtn.disabled = true;
+            stopBtn.disabled = false;
+
+            progressBar.classList.add('active');
+            progressFill.style.width = '0%';
+            progressText.textContent = '0%';
+
+            resultBody.innerHTML = `<tr><td colspan="5" class="empty-state">
+                <div class="icon">⏳</div>
+                <div>Mengecek ${urls.length} website dengan ${threadInput.value} thread...</div>
+                <p style="font-size:0.8rem;margin-top:5px;">Proses berjalan paralel</p>
+            </td></tr>`;
+            updateStats();
+
+            const threadCount = Math.min(parseInt(threadInput.value) || 10, 50);
+            const total = urls.length;
+            const resultsArray = [];
+            let index = 0;
+
+            async function processNext() {
+                if (stopRequested) return null;
+                if (index >= total) return null;
+                const currentIndex = index++;
+                const url = urls[currentIndex];
+                return await checkUrl(url, currentIndex, total);
+            }
+
+            const workers = [];
+            const chunkSize = Math.min(threadCount, total);
+            
+            for (let i = 0; i < chunkSize; i++) {
+                workers.push((async () => {
+                    while (true) {
+                        if (stopRequested) break;
+                        const result = await processNext();
+                        if (!result) break;
+                        resultsArray.push(result);
+                        if (resultsArray.length % 3 === 0 || resultsArray.length === total) {
+                            results = [...resultsArray];
+                            renderTable();
+                        }
+                    }
+                })());
+            }
+
+            await Promise.all(workers);
+            results = resultsArray;
+            renderTable();
+            updateProgress(total, total);
+
+            isRunning = false;
+            checkBtn.disabled = false;
+            stopBtn.disabled = true;
+            progressBar.classList.remove('active');
+
+            if (stopRequested) {
+                progressText.textContent = '⏹ Dihentikan';
+                showToast('Pengecekan dihentikan', 'info');
+            } else {
+                progressText.textContent = '✅ Selesai';
+                const upCount = results.filter(r => r.status === 'UP').length;
+                showToast(`✅ Selesai! ${upCount} dari ${total} website UP`, 'success');
+                setTimeout(() => { progressText.textContent = '100%'; }, 1000);
+            }
+
+            activeControllers.forEach(c => c.abort());
+            activeControllers = [];
+        }
+
+        function updateProgress(done, total) {
+            const pct = Math.min(100, Math.round((done / total) * 100));
+            progressFill.style.width = pct + '%';
+            progressText.textContent = pct + '%';
+        }
+
+        // --- Preset handler ---
+        document.querySelectorAll('#presetSites .tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('#presetSites .tag').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                const preset = this.dataset.preset;
+                if (presets[preset]) {
+                    setUrls(presets[preset]);
+                }
+            });
+        });
+
+        // --- Event handlers ---
+        checkBtn.addEventListener('click', () => {
+            const urls = getUrlsFromInput();
+            massCheck(urls);
+        });
+
+        stopBtn.addEventListener('click', () => {
+            stopRequested = true;
+            stopBtn.disabled = true;
+            stopBtn.textContent = '⏹ Menghentikan...';
+            activeControllers.forEach(c => c.abort());
+            activeControllers = [];
+            setTimeout(() => {
+                stopBtn.textContent = '⏹ Stop';
+                stopBtn.disabled = false;
+                if (!isRunning) stopBtn.disabled = true;
+            }, 1000);
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            if (isRunning) {
+                if (!confirm('Pengecekan sedang berjalan. Hentikan dan refresh?')) return;
+                stopRequested = true;
+                setTimeout(() => location.reload(), 500);
+            } else {
+                location.reload();
+            }
+        });
+
+        exportBtn.addEventListener('click', () => {
+            if (results.length === 0) {
+                showToast('Tidak ada data untuk diexport', 'error');
+                return;
+            }
+            let csv = 'URL,Status,Waktu(ms)\n';
+            results.forEach(r => {
+                csv += `"${r.url}","${r.status}",${r.time !== undefined ? r.time : ''}\n`;
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `response_checker_${new Date().toISOString().slice(0,10)}.csv`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+            showToast('📥 CSV berhasil diexport!', 'success');
+        });
+
+        clearBtn.addEventListener('click', () => {
+            if (isRunning) {
+                if (!confirm('Pengecekan sedang berjalan. Hentikan dan bersihkan?')) return;
+                stopRequested = true;
+                setTimeout(() => {
+                    results = [];
+                    renderTable();
+                    progressBar.classList.remove('active');
+                    progressText.textContent = '0%';
+                    isRunning = false;
+                    checkBtn.disabled = false;
+                    stopBtn.disabled = true;
+                    activeControllers = [];
+                    showToast('🗑 Semua hasil dibersihkan', 'info');
+                }, 500);
+            } else {
+                results = [];
+                renderTable();
+                progressBar.classList.remove('active');
+                progressText.textContent = '0%';
+                showToast('🗑 Semua hasil dibersihkan', 'info');
+            }
+        });
+
+        // Keyboard shortcut
+        urlInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+                e.preventDefault();
+                checkBtn.click();
+            }
+        });
+
+        // Init with default preset
+        setUrls(presets.default);
+    })();
+</script>
+
+</body>
+</html>
